@@ -1,4 +1,12 @@
 {
   "name": "md-links",
-  "version": "0.1.0"
+  "version": "0.1.0",
+  "dependencies": {
+    "chalk": "^2.4.2",
+    "markdown-link-extractor": "^1.2.0",
+    "node-fetch": "^2.3.0"
+  },
+  "devDependencies": {
+    "jest": "^24.1.0"
+  }
 }
