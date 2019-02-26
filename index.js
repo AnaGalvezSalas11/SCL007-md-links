@@ -1,55 +1,65 @@
-//debo exportar una función mdLink
-//mdLinks(path, options), interfaz del modulo
-//validate: Booleano que determina si se desea validar los links encontrados.
+//debo exportar una función mdLink OK
+//mdLinks(path, options), interfaz del modulo OK
+//--validate: Booleano que determina si se desea validar los links encontrados.
 //agregar: bin en el archivo package.json
-// #!/usr/bin/env node
 //sudo npm update -g "nombre de modulo" (para instalar nuestro modulo)
-//funcion para saber si el link esta roto o no.
-// fetch('https://google.cl')
 
-"use strict";
+// #!/usr/bin/env node
+
+'use strict';
 
 
-let path = require('path')
+let pathlink = require('path')
 let fs = require('fs')
 let markdownLinkExtractor = require('markdown-link-extractor');
 const fetch = require('node-fetch')
 const chalk = require('chalk');
 
 
-function extract() {
+function mdLink(path, options) {
+    let extension = pathlink.extname(process.argv[2]);
 
-    let extension = path.extname(process.argv[2]);
     
-    if (extension === '.md' ){
-        let markdown = fs.readFileSync('README.md').toString();
+
+    if (extension === '.md') {
+        let markdown = fs.readFileSync(process.argv[2]).toString();
         let links = markdownLinkExtractor(markdown);
-    
-         links.forEach(function (link) {
-    
-        fetch(link)
-        .then((response)=>{
-                if(response.status === 404){
-                   console.log (chalk.red.bold(link +" "+ chalk.bgWhite("Página sin servicio "))) 
-                }
-    
-                else{
-                    console.log(chalk.blue.bold(link +" "+ chalk.bgWhite("Ok")))
-                }
+
+
+        const linkPromise = links.map(function (link) {
+
+            return new Promise((resolve, reject) => {
+
+                fetch(link)
+                    .then((response) => {
+                        if (response.status === 200) {
+                            resolve(link + " " + 'Ok')
+                        }
+
+                        else {
+                            resolve(link + " " +'Página sin servicio ')
+                        }
+                    
+                    })
+                    .catch(err =>{
+                        return resolve(link + " " +'Página sin servicio ')
+                    })
+                //console.log(link);
+            });
+        });
+
+
+
+        Promise.all(linkPromise)
+            .then(showLink => {
+                console.log (showLink)})
+            .catch((err) => {
+                console.log('error')
             })
-        //console.log(link);
-    });
+
     }
-    
     else{
-        console.log (chalk.green.bold("Este arhivo no es extensión md"))
-    }
-    }
-    
-    
-    extract()
-    
-    
+        console.log (chalk.green.bold("Este arhivo no es extensión md"))}    
+}
 
-
-
+mdLink() 

@@ -3,10 +3,31 @@
   "version": "0.1.0",
   "dependencies": {
     "chalk": "^2.4.2",
+    "eslint": "^5.14.1",
     "markdown-link-extractor": "^1.2.0",
     "node-fetch": "^2.3.0"
   },
   "devDependencies": {
+    "chai": "^4.2.0",
     "jest": "^24.1.0"
-  }
+  },
+  "description": "## Preámbulo",
+  "main": "index.js",
+  "bin": "./index.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AnaGalvezSalas11/SCL007-md-links.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/AnaGalvezSalas11/SCL007-md-links/issues"
+  },
+  "homepage": "https://github.com/AnaGalvezSalas11/SCL007-md-links#readme"
 }

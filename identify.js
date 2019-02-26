@@ -2,74 +2,88 @@
 // "use strict";
 
 
-// let path = require('path')
-// let fs = require('fs')
-// let markdownLinkExtractor = require('markdown-link-extractor');
-// const fetch = require('node-fetch')
-// const chalk = require('chalk');
+'use strict';
+
+const fs = require('fs'),
+    path = require('path');
 
 
+function readDirRecursive(startDir) {
+    const readDirQueue = [],
+        fileList = [];
 
+    function readDir(dir) {
+       // TE DEVUELVE UNA PROMESA CUYO RESOLVE TIENE UNA LISTA DE LOS ITEMS
+       // EN EL DIRECTORIO Y LA RUTA
+        function getItemList(readDir) {
+            return new Promise((resolve,reject) => {
+                fs.readdir(readDir,(err,itemList) => {
+                    if (err) {
+                        return reject(err);
+                    }
 
-// function archivo() {
-// let extention = path.extname(process.argv[2]);
-// if(extention === '.md' ){
-//     fs.readFile(process.argv[2], 'utf8',(err, data) => {
-//         console.log (data) 
-//     })
-// }
-// else{
-//     console.log ("Este arhivo no es de extensión md")
-// }
+                    // resolve with parent path added to each item
+                    resolve(itemList.map((item) => path.resolve(readDir,item)));
+                });
+            });
+        }
 
+       // DEVUELVE UNA PROMESA POR CADA ITEM EN LA LISTA, CADA PROMESA
+       // CONTIENE LA RUTA DEL ARCHIVO Y SI ES DIRECTORIO (CARPETA)
+        function getItemListStat(itemList) {
+            function getStat(itemPath) {
+                return new Promise((resolve,reject) => {
+                    fs.stat(itemPath,(err,stat) => {
+                        if (err) {
+                            return reject(err);
+                        }
 
-// }
+                        // resolve with item path and if directory
+                        resolve({itemPath,isDirectory: stat.isDirectory()});
+                    });
+                });
+            }
 
-// archivo()
+            // stat all items in list
+            return Promise.all(itemList.map(getStat));
+        }
 
+       // PROCESA LA LISTA, SI ES DIRECTORIO LO AGREGA A LA COLA Y
+       // LUEGO SI LA COLA AUN TIENE ITEMS, PROCESA ESE ITEM Y
+       // A LA VEZ LO SACA DE LA COLA
+       // SI ES UN ARCHIVO, AGREGA LA RUTA AL ARREGLO DE ARCHIVOS
+        function processItemList(itemList) {
+            for (const {itemPath,isDirectory} of itemList) {
+                // if directory add to queue
+                if (isDirectory) {
+                    readDirQueue.push(itemPath);
+                    continue;
+                }
 
+                // add file to list
+                fileList.push(itemPath);
+            }
 
-// function extract() {
+            // if queue, process next item recursive
+            if (readDirQueue.length > 0) {
+                return readDir(readDirQueue.shift());
+            }
 
-// let extension = path.extname(process.argv[2]);
+            // finished - return file list
+            return fileList;
+        }
 
-// if (extension === '.md' ){
-//     let markdown = fs.readFileSync('README.md').toString();
-//     let links = markdownLinkExtractor(markdown);
+        // read item list from directory, stat each item then walk result
+        return getItemList(dir)
+            .then(getItemListStat)
+            .then(processItemList);
+    }
 
-//      links.forEach(function (link) {
+    // commence reading at the top
+    return readDir(startDir);
+}
 
-//     fetch(link)
-//     .then((response)=>{
-//             if(response.status === 404){
-//                console.log (chalk.red.bold(link + "  Página sin servicio")) 
-//             }
+readDirRecursive('.')
+    .then((itemList) => console.log(itemList))
+    .catch((err) => console.log(err));
 
-//             else{
-//                 console.log(chalk.blue.bold(link + "  Ok"))
-//             }
-//         })
-//     //console.log(link);
-// });
-// }
-
-// else{
-//     console.log (chalk.green.bold("Este arhivo no es extensión md"))
-// }
-// }
-
-
-// extract()
-
-
-
-
-
-// .then((response)=>{
-//     if(response.status === 404){
-//        console.log ("Página sin servicio") 
-//     }
-//     else{
-//         console.log("Ok")
-//     }
-// })
