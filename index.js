@@ -19,7 +19,7 @@ function mdLink(path, options) {
     let absolutePath = pathlink.resolve(path);
     let extension = pathlink.extname(path);
 
-    
+
 
     if (extension === '.md') {
         let markdown = fs.readFileSync(absolutePath).toString();
@@ -33,7 +33,7 @@ function mdLink(path, options) {
                 
                 fetch(link)
                     .then((response) => {
-                        
+
                         if (response.status === 200) {
                             resolve({
                                 "Link": link,
@@ -49,7 +49,7 @@ function mdLink(path, options) {
                             })
                         }
                     })
-                    .catch(err =>{
+                    .catch(err => {
                         resolve({
                             "link": link,
                             "validation": 'No existe',
@@ -62,14 +62,20 @@ function mdLink(path, options) {
 
         Promise.all(linkPromise)
             .then(showLink => {
-                console.log (showLink)})
+                console.log(showLink)
+            })
             .catch((err) => {
                 console.log('error')
             })
 
     }
-    else{
-        console.log (chalk.green.bold('Este arhivo no es extensión md'))}    
-}
+    else {
+        console.log(chalk.green.bold('Este arhivo no es extensión md'))
+    }
 
-mdLink(process.argv[2]);
+    
+}
+if(require.main === module)
+    mdLink(process.argv[2]);
+
+module.exports = mdLink;
