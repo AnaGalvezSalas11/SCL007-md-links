@@ -1,10 +1,9 @@
 //debo exportar una función mdLink OK
 //mdLinks(path, options), interfaz del modulo OK
 //--validate: Booleano que determina si se desea validar los links encontrados.
-//agregar: bin en el archivo package.json
 //sudo npm update -g "nombre de modulo" (para instalar nuestro modulo)
 
-// #!/usr/bin/env node
+//#!/usr/bin/env node
 
 'use strict';
 
@@ -17,12 +16,13 @@ const chalk = require('chalk');
 
 
 function mdLink(path, options) {
-    let extension = pathlink.extname(process.argv[2]);
+    let absolutePath = pathlink.resolve(path);
+    let extension = pathlink.extname(path);
 
     
 
     if (extension === '.md') {
-        let markdown = fs.readFileSync(process.argv[2]).toString();
+        let markdown = fs.readFileSync(absolutePath).toString();
         let links = markdownLinkExtractor(markdown);
 
 
@@ -30,25 +30,35 @@ function mdLink(path, options) {
 
             return new Promise((resolve, reject) => {
 
+                
                 fetch(link)
                     .then((response) => {
+                        
                         if (response.status === 200) {
-                            resolve(link + " " + 'Ok')
+                            resolve({
+                                "Link": link,
+                                "Validation": "Ok",
+                                "Ruta": absolutePath,
+                            })
                         }
-
                         else {
-                            resolve(link + " " +'Página sin servicio ')
+                            resolve({
+                                "link": link,
+                                "validation": "No existe",
+                                "Ruta": absolutePath,
+                            })
                         }
-                    
                     })
                     .catch(err =>{
-                        return resolve(link + " " +'Página sin servicio ')
+                        resolve({
+                            "link": link,
+                            "validation": 'No existe',
+                            "Ruta": absolutePath,
+                        })
                     })
                 //console.log(link);
             });
         });
-
-
 
         Promise.all(linkPromise)
             .then(showLink => {
@@ -59,7 +69,7 @@ function mdLink(path, options) {
 
     }
     else{
-        console.log (chalk.green.bold("Este arhivo no es extensión md"))}    
+        console.log (chalk.green.bold('Este arhivo no es extensión md'))}    
 }
 
-mdLink() 
+mdLink(process.argv[2]);
