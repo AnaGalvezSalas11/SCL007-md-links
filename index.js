@@ -8,22 +8,22 @@
 'use strict';
 
 
-let pathlink = require('path')
-let fs = require('fs')
-let markdownLinkExtractor = require('markdown-link-extractor');
+const pathlink = require('path')
+const fs = require('fs')
+const markdownLinkExtractor = require('markdown-link-extractor');
 const fetch = require('node-fetch')
 const chalk = require('chalk');
 
 
 function mdLink(path, options) {
-    let absolutePath = pathlink.resolve(path);
-    let extension = pathlink.extname(path);
+    const absolutePath = pathlink.resolve(path);
+    const extension = pathlink.extname(path);
 
 
 
     if (extension === '.md') {
-        let markdown = fs.readFileSync(absolutePath).toString();
-        let links = markdownLinkExtractor(markdown);
+        const markdown = fs.readFileSync(absolutePath).toString();
+        const links = markdownLinkExtractor(markdown);
 
 
         const linkPromise = links.map(function (link) {
