@@ -14,23 +14,21 @@ const markdownLinkExtractor = require('markdown-link-extractor');
 const fetch = require('node-fetch')
 const chalk = require('chalk');
 
-
-function mdLink(path, options) {
+//agregar segundo parametro
+function mdLink(path) {
     const absolutePath = pathlink.resolve(path);
     const extension = pathlink.extname(path);
-
-
+    const directorygetIn = fs.statSync(path)
+    const travelDirectory = directorygetIn.isDirectory()
 
     if (extension === '.md') {
-        const markdown = fs.readFileSync(absolutePath).toString();
-        const links = markdownLinkExtractor(markdown);
-
+        let markdown = fs.readFileSync(absolutePath).toString();
+        let links = markdownLinkExtractor(markdown);
 
         const linkPromise = links.map(function (link) {
 
             return new Promise((resolve, reject) => {
 
-                
                 fetch(link)
                     .then((response) => {
 
@@ -44,7 +42,7 @@ function mdLink(path, options) {
                         else {
                             resolve({
                                 "link": link,
-                                "validation": "No existe",
+                                "validation": "Link no encontrado",
                                 "Ruta": absolutePath,
                             })
                         }
@@ -52,13 +50,13 @@ function mdLink(path, options) {
                     .catch(err => {
                         resolve({
                             "link": link,
-                            "validation": 'No existe',
+                            "validation": 'Link no encontado',
                             "Ruta": absolutePath,
                         })
                     })
-                //console.log(link);
             });
         });
+
 
         Promise.all(linkPromise)
             .then(showLink => {
@@ -69,13 +67,29 @@ function mdLink(path, options) {
             })
 
     }
-    else {
-        console.log(chalk.green.bold('Este arhivo no es extensión md'))
-    }
 
-    
+    else if (travelDirectory === true) {
+        const readDirectory = fs.readdirSync(path)
+        return (Promise.all(readDirectory.map((file) => {
+            const filesArch = pathlink.join(absolutePath, file)
+            //agreagar option
+            return mdLink(filesArch);
+        })).then(arregloDeArreglos => {
+            //juntar todos los resultados
+            console.log(arregloDeArreglos)
+            
+            // return resultado;
+        })
+
+
+        )
+    } else {
+        return Promise.resolve([]);
+    }
 }
-if(require.main === module)
+
+
+if (require.main === module)
     mdLink(process.argv[2]);
 
 module.exports = mdLink;
