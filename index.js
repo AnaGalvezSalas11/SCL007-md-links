@@ -1,5 +1,3 @@
-//debo exportar una función mdLink OK
-//mdLinks(path, options), interfaz del modulo OK
 //--validate: Booleano que determina si se desea validar los links encontrados.
 //sudo npm update -g "nombre de modulo" (para instalar nuestro modulo)
 
@@ -14,11 +12,11 @@ const markdownLinkExtractor = require('markdown-link-extractor');
 const fetch = require('node-fetch')
 const chalk = require('chalk');
 
-//agregar segundo parametro
+//agregar segundo parametro: option
 function mdLink(path) {
     const absolutePath = pathlink.resolve(path);
     const extension = pathlink.extname(path);
-    const directorygetIn = fs.statSync(path)
+    const directorygetIn = fs.statSync(path) 
     const travelDirectory = directorygetIn.isDirectory()
 
     if (extension === '.md') {
@@ -58,13 +56,8 @@ function mdLink(path) {
         });
 
 
-        Promise.all(linkPromise)
-            .then(showLink => {
-                console.log(showLink)
-            })
-            .catch((err) => {
-                console.log('error')
-            })
+       return Promise.all(linkPromise)
+            
 
     }
 
@@ -75,21 +68,26 @@ function mdLink(path) {
             //agreagar option
             return mdLink(filesArch);
         })).then(arregloDeArreglos => {
-            //juntar todos los resultados
-            console.log(arregloDeArreglos)
-            
-            // return resultado;
+            let emptyarr = []
+
+            for (let i= 0 ; i < arregloDeArreglos.length; i++){
+                emptyarr = emptyarr.concat(arregloDeArreglos[i])
+                }
+
+            return emptyarr;
         })
 
 
         )
+        
     } else {
         return Promise.resolve([]);
     }
+            // return resultado;
 }
 
 
 if (require.main === module)
-    mdLink(process.argv[2]);
+    return mdLink(process.argv[2]).then(console.log);
 
 module.exports = mdLink;
