@@ -24,17 +24,18 @@ function mdLink(path) {
         let links = markdownLinkExtractor(markdown);
 
         const linkPromise = links.map(function (link) {
-
             return new Promise((resolve, reject) => {
 
-                fetch(link)
+                fetch(link.href)
                     .then((response) => {
 
                         if (response.status === 200) {
                             resolve({
-                                "Link": link,
+                                "Link": link.href,
                                 "Validation": "Ok",
                                 "Ruta": absolutePath,
+                                "Texto": link.text,
+                                
                             })
                         }
                         else {
@@ -54,8 +55,6 @@ function mdLink(path) {
                     })
             });
         });
-
-
        return Promise.all(linkPromise)
             
 
@@ -83,7 +82,6 @@ function mdLink(path) {
     } else {
         return Promise.resolve([]);
     }
-            // return resultado;
 }
 
 
