@@ -1,11 +1,11 @@
 {
   "name": "extract_link_markdown",
   "version": "0.1.0",
-  "description": "reconoce archivos .md, extrae los link del documento e informa cuales son los validos y cuales no",
+  "description": "reconoce archivos .md, extrae los link del documento e informa cuales son los validos y cuales no, la ruta de ubicación del archivo donde estan los link",
   "main": "index.js",
-  "bin": "./index.js",
-
-
+  "bin": {
+    "md-link": "./index.js"
+  },
   "dependencies": {
     "chalk": "^2.4.2",
     "markdown-link-extractor": "^1.2.0",
@@ -19,19 +19,16 @@
     "eslint-config-airbnb-base": "^13.1.0",
     "eslint-plugin-import": "^2.16.0"
   },
-
   "directories": {
     "test": "test"
   },
   "scripts": {
     "test": "jest"
   },
-  "jest":{
+  "jest": {
     "verbose": true,
     "collectCoverage": true
   },
-
-  
   "repository": {
     "type": "git",
     "url": "git+https://github.com/AnaGalvezSalas11/SCL007-md-links.git"
@@ -43,4 +40,3 @@
   },
   "homepage": "https://github.com/AnaGalvezSalas11/SCL007-md-links#readme"
 }
-

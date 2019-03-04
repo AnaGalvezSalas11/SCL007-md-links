@@ -68,11 +68,11 @@ function mdLink(path, option) {
             const filesArch = pathlink.join(absolutePath, file)
             //agreagar option
             return mdLink(filesArch);
-        })).then(arregloDeArreglos => {
+        })).then(arrTotal => {
             let emptyarr = []
 
-            for (let i= 0 ; i < arregloDeArreglos.length; i++){
-                emptyarr = emptyarr.concat(arregloDeArreglos[i])
+            for (let i= 0 ; i < arrTotal.length; i++){
+                emptyarr = emptyarr.concat(arrTotal[i])
                 }
 
             return emptyarr;
