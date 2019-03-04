@@ -89,8 +89,7 @@ function mdLink(path, option) {
 
 }
 
-
 if (require.main === module)
-    mdLink(process.argv[2]).then(console.log); 
+    mdLink(process.argv[2]).then(console.log);
 
 module.exports = mdLink;

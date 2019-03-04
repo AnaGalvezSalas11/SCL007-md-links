@@ -4,12 +4,12 @@ const chai = require('chai')
 
 describe('mdLinks', () => {
 
-  it('Deberia ser una funcion', () => {
+  it('Deberia ser una función', () => {
     expect(typeof mdLinks).toBe('function');
   });
 
 
-  it('Debería retornar los links, validation, rutas y textos de los archivos .md de ./pruebafinal', async()=>{
+  it('Debería retornar los links, validaciones, rutas y textos de los archivos .md de ./pruebafinal', async()=>{
     const data = await mdLinks('./pruebafinal')
     let resultSearch = 
     [ { Link:
@@ -32,5 +32,11 @@ describe('mdLinks', () => {
     expect(data).toEqual(resultSearch)
 
   });
+  
+  it('Deberia retornar un arreglo vacio si no encuentra un archivo .md', async ()=>{
+  const data1= await mdLinks('./prueba')
+  expect(data1).toEqual([])
+
+  })
 
 })
