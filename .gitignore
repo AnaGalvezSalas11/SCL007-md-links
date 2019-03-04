@@ -3,3 +3,5 @@ DS_Store
 package-lock.json
 package.json
 prueba.js
+pruebavalidare.js
+coverage/*
